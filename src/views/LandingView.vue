@@ -40,9 +40,9 @@ const playerFeatures = [
 </script>
 
 <template>
-  <div class="landing-hero text-white">
+  <div class="landing-hero bg-white">
     <!-- NAVBAR -->
-    <nav class="nav-glass fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between">
+    <nav class="nav-glass fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-3">
         <span class="text-2xl">🐉</span>
         <span class="font-bold text-lg tracking-wide" style="font-family: 'Metamorphous', serif; color: #C9A84C;">
@@ -88,7 +88,7 @@ const playerFeatures = [
         </h1>
 
         <p class="text-lg md:text-xl mb-4 fade-in-up fade-in-up-delay-2 max-w-2xl mx-auto"
-           style="color: rgba(253,246,227,0.7); line-height: 1.8;">
+           style="color: #4B5563; line-height: 1.8;">
           La plataforma definitiva para tus partidas de D&D. Hojas de personaje inteligentes,
           gestión de campañas, tirada de dados en tiempo real y mucho más.
         </p>
@@ -142,7 +142,7 @@ const playerFeatures = [
     </section>
 
     <!-- DM vs PLAYER -->
-    <section class="py-28 px-6" style="background: rgba(0,0,0,0.2);">
+    <section class="py-28 px-6 bg-gray-50 border-y border-gray-100">
       <div class="max-w-5xl mx-auto">
         <div class="text-center mb-16">
           <h2 class="text-3xl md:text-5xl font-black" style="font-family:'Metamorphous',serif; color:#fdf6e3;">

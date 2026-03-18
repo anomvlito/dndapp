@@ -1,211 +1,140 @@
 /* ============================================
-   LANDING PAGE — Dragon's Table
-   Dark fantasy, liquid glass, premium aesthetic
+   CLEAN & MODERN UI — Dragon's Table
+   Fondo claro, alta legibilidad, estética pro
    ============================================ */
 
+:root {
+  --dnd-red: #A82020;
+  --dnd-gold: #B8860B;
+  --dnd-dark: #1A1A1A;
+  --bg-main: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --text-main: #111827;
+  --text-muted: #4B5563;
+  --border: #E5E7EB;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+}
+
+/* Navbar Limpia */
+.nav-glass {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+/* Landing Hero Claro */
 .landing-hero {
   min-height: 100vh;
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(139, 26, 26, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(201, 168, 76, 0.08) 0%, transparent 50%),
-    linear-gradient(180deg, #0d0500 0%, #1a0800 40%, #120500 100%);
-  position: relative;
-  overflow: hidden;
+  background: radial-gradient(circle at top right, rgba(168, 32, 32, 0.03), transparent),
+              radial-gradient(circle at bottom left, rgba(184, 134, 11, 0.03), transparent),
+              #FFFFFF;
+  color: var(--text-main) !important;
 }
 
-.landing-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.4;
-  pointer-events: none;
+.landing-hero h1, .landing-hero h2 {
+  color: var(--text-main) !important;
 }
 
-/* Glass cards for features */
+.landing-hero p {
+  color: var(--text-muted) !important;
+}
+
+/* Botones con mejor contraste */
+.btn-dnd-primary {
+  background: var(--dnd-red);
+  color: white !important;
+  border: none;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-dnd-primary:hover {
+  background: #8b1a1a;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-dnd-secondary {
+  background: white;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border);
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-dnd-secondary:hover {
+  background: var(--bg-soft);
+  border-color: var(--text-main);
+}
+
+/* Cards de Features */
 .feature-glass {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(201, 168, 76, 0.15);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
 }
 
 .feature-glass:hover {
-  background: rgba(201, 168, 76, 0.06);
-  border-color: rgba(201, 168, 76, 0.4);
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(201, 168, 76, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border-color: var(--dnd-red);
 }
 
-/* CTA Button primary */
-.btn-dnd-primary {
-  background: linear-gradient(135deg, #8B1A1A 0%, #6B1010 100%);
-  border: 2px solid #C9A84C;
-  color: #C9A84C;
-  font-family: 'Metamorphous', serif;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 14px 36px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.85rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-dnd-primary::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.btn-dnd-primary:hover::before { left: 100%; }
-.btn-dnd-primary:hover {
-  background: linear-gradient(135deg, #a02020 0%, #8B1A1A 100%);
-  box-shadow: 0 0 30px rgba(201, 168, 76, 0.3), 0 8px 24px rgba(0,0,0,0.6);
-  transform: translateY(-2px);
-}
-.btn-dnd-primary:active { transform: translateY(0); }
-
-/* Secondary button */
-.btn-dnd-secondary {
-  background: transparent;
-  border: 2px solid rgba(201, 168, 76, 0.4);
-  color: rgba(201, 168, 76, 0.8);
-  font-family: 'Metamorphous', serif;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 14px 36px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.85rem;
-}
-.btn-dnd-secondary:hover {
-  border-color: #C9A84C;
-  color: #C9A84C;
-  background: rgba(201, 168, 76, 0.05);
-}
-
-/* Auth card glass */
+/* Auth Cards */
 .auth-card {
-  background: rgba(15, 5, 0, 0.85);
-  border: 1px solid rgba(201, 168, 76, 0.2);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 40px rgba(139,26,26,0.1);
-}
-
-/* Dashboard card */
-.campaign-card {
-  background: linear-gradient(145deg, #1a0800, #0d0500);
-  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
   border-radius: 16px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
-.campaign-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
+/* Dashboard & Campaign Cards */
+.campaign-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
 }
 
-.campaign-card:hover::after { opacity: 1; }
 .campaign-card:hover {
-  border-color: rgba(201, 168, 76, 0.5);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 20px rgba(201, 168, 76, 0.1);
+  border-color: var(--dnd-red);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* DM badge */
-.dm-crown {
-  background: linear-gradient(135deg, #C9A84C, #a07030);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+.campaign-card .font-black { color: var(--text-main) !important; }
+.campaign-card .text-xs { color: var(--text-muted) !important; }
 
-/* Role pill badges */
+/* Badges */
 .role-pill-dm {
-  background: linear-gradient(90deg, #8B1A1A, #6B1010);
-  border: 1px solid #C9A84C;
-  color: #C9A84C;
-  font-size: 0.6rem;
-  font-weight: 900;
-  letter-spacing: 0.15em;
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #F87171;
+  font-weight: 700;
   padding: 2px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
+  border-radius: 99px;
 }
 
 .role-pill-player {
-  background: rgba(201, 168, 76, 0.1);
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  color: rgba(201, 168, 76, 0.8);
-  font-size: 0.6rem;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #D1D5DB;
   font-weight: 700;
-  letter-spacing: 0.15em;
   padding: 2px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-}
-
-/* Navbar glass */
-.nav-glass {
-  background: rgba(10, 3, 0, 0.8);
-  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
-  backdrop-filter: blur(20px);
-}
-
-/* Decorative divider */
-.dnd-divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: rgba(201, 168, 76, 0.4);
-}
-
-.dnd-divider::before,
-.dnd-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.3), transparent);
-}
-
-/* Scroll animations */
-.fade-in-up {
-  animation: fadeInUp 0.8s ease both;
-}
-
-.fade-in-up-delay-1 { animation-delay: 0.1s; }
-.fade-in-up-delay-2 { animation-delay: 0.2s; }
-.fade-in-up-delay-3 { animation-delay: 0.3s; }
-.fade-in-up-delay-4 { animation-delay: 0.4s; }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Glow text */
-.glow-gold {
-  text-shadow: 0 0 30px rgba(201, 168, 76, 0.4), 0 0 60px rgba(201, 168, 76, 0.1);
-}
-
-.glow-red {
-  text-shadow: 0 0 30px rgba(139, 26, 26, 0.6);
+  border-radius: 99px;
 }
