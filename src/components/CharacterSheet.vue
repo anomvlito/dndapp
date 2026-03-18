@@ -1,11 +1,8 @@
 <script setup>
-const props = defineProps({
-  characterId: { type: [String, Number], default: null },
-  initialData: { type: Object, default: null }
-})
-
 import { ref, computed, watch, onMounted } from 'vue'
+import { debounce } from 'lodash-es'
 
+// Components
 import DiceTray from './DiceTray.vue'
 import CharacterStats from './CharacterStats.vue'
 import SkillsPanel from './SkillsPanel.vue'
@@ -13,6 +10,7 @@ import CombatPanel from './CombatPanel.vue'
 import PersonalityPanel from './PersonalityPanel.vue'
 import BioTab from './BioTab.vue'
 
+// Utils
 import {
   INITIAL_STATS,
   INITIAL_CHAR_INFO,
@@ -24,7 +22,11 @@ import {
 } from '../constants/dndData'
 import { getMod } from '../utils/modifiers'
 import { exportToExcel } from '../utils/exportExcel'
-import { debounce } from 'lodash-es'
+
+const props = defineProps({
+  characterId: { type: [String, Number], default: null },
+  initialData: { type: Object, default: null }
+})
 
 const charId = ref(props.characterId)
 const isSaving = ref(false)
@@ -46,8 +48,8 @@ const deathSaves = ref({
 })
 const coins = ref({ ...INITIAL_COINS })
 
-const armorClass = computed(() => 10 + getMod(stats.value.destreza) + getMod(stats.value.constitucion))
-const initiative = computed(() => getMod(stats.value.destreza))
+const armorClass = computed(() => 10 + getMod(stats.value.destreza) || 10)
+const initiative = computed(() => getMod(stats.value.destreza) || 0)
 
 function handleStatChange(stat, val) {
   stats.value = { ...stats.value, [stat]: parseInt(val) || 0 }
@@ -92,6 +94,10 @@ function handleExport() {
     hitDice: hitDice.value,
     getMod,
   })
+}
+
+function handlePrint() {
+  window.print()
 }
 
 function handleReset() {
@@ -297,7 +303,7 @@ function mapCharData(char) {
         <!-- FOOTER -->
         <footer class="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 no-print border-t border-black/10 pt-8">
           <button
-            @click="window.print()"
+            @click="handlePrint"
             class="w-full sm:w-auto bg-dnd-red text-white px-8 py-3 rounded-xl font-black shadow-lg hover:bg-black transition-all flex items-center justify-center gap-2 uppercase text-xs tracking-widest"
           >
             🖨️ PDF de Hoja

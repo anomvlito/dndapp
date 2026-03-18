@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -10,7 +10,11 @@ export const useAuthStore = defineStore('auth', () => {
   const isDM = computed(() => user.value?.role === 'dm')
   const isPlayer = computed(() => user.value?.role === 'player')
 
-  // Helper to handle Clerk synchronization
+  /**
+   * Sincroniza desde el objeto User de Clerk
+   * @param {object} clerkUser 
+   * @param {boolean} signedIn 
+   */
   async function syncFromClerk(clerkUser, signedIn) {
     if (!signedIn || !clerkUser) {
       user.value = null
@@ -20,21 +24,37 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     try {
+      const email = clerkUser.primaryEmailAddress?.emailAddress
+      const name = clerkUser.fullName || clerkUser.firstName || 'Aventurero'
+
       const res = await fetch('/api/users/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           clerk_id: clerkUser.id,
-          email: clerkUser.primaryEmailAddress?.emailAddress,
-          name: clerkUser.fullName || clerkUser.firstName,
+          email: email,
+          name: name,
           avatar: clerkUser.imageUrl
         })
       })
+      
       const data = await res.json()
-      user.value = { ...clerkUser, ...data, clerkId: clerkUser.id }
+      
+      // Combinar datos locales con los de DB
+      user.value = {
+        clerkId: clerkUser.id,
+        imageUrl: clerkUser.imageUrl,
+        firstName: clerkUser.firstName,
+        lastName: clerkUser.lastName,
+        ...data // role, id (interno), etc.
+      }
     } catch (e) {
       console.error('Error syncing user:', e)
-      user.value = clerkUser
+      user.value = {
+        clerkId: clerkUser.id,
+        imageUrl: clerkUser.imageUrl,
+        firstName: clerkUser.firstName
+      }
     } finally {
       loading.value = false
     }
