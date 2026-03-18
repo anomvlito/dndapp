@@ -1,3 +1,4 @@
+<script setup>
 const props = defineProps({
   characterId: { type: [String, Number], default: null },
   initialData: { type: Object, default: null }
