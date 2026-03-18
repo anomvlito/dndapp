@@ -115,3 +115,12 @@ export const INITIAL_COINS = { cp: 0, sp: 0, ep: 0, gp: 10, pp: 0 };
 export const PROF_BONUS = 2;
 
 export const DICE_TYPES = [4, 6, 8, 10, 12, 20];
+
+export const SKILLS_BY_STAT = [
+  { stat: 'fuerza',       label: 'Fuerza',       skills: ['atletismo'] },
+  { stat: 'destreza',     label: 'Destreza',      skills: ['acrobacias', 'juegoManos', 'sigilo'] },
+  { stat: 'constitucion', label: 'Constitución',  skills: [] },
+  { stat: 'inteligencia', label: 'Inteligencia',  skills: ['arcanos', 'historia', 'investigacion', 'naturaleza', 'religion'] },
+  { stat: 'sabiduria',    label: 'Sabiduría',     skills: ['medicina', 'percepcion', 'perspicacia', 'supervivencia', 'tratoAnimales'] },
+  { stat: 'carisma',      label: 'Carisma',       skills: ['engano', 'interpretacion', 'intimidacion', 'persuasion'] },
+];

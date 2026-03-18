@@ -5,7 +5,9 @@
 @tailwind utilities;
 
 :root {
-  --dnd-red: #8b0000;
+  --dnd-red: #8B1A1A;
+  --dnd-gold: #C9A84C;
+  --dnd-dark: #1C0A00;
   --parchment: #fdf6e3;
   --border-color: #000;
 }
@@ -34,14 +36,32 @@ input[type="text"], input[type="number"], textarea {
 
 input:focus { outline: none; border-bottom: 2px solid var(--dnd-red); }
 
+/* Section Banner — encabezado de sección estilo PHB 2024 */
+.section-banner {
+  background-color: var(--dnd-red);
+  color: #fff;
+  font-family: 'Metamorphous', cursive;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0;
+}
+
 .stat-container {
-  border: 2px solid var(--border-color); border-radius: 10px; background: white;
-  padding: 8px 4px; text-align: center; position: relative;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: white;
+  padding: 6px 4px 20px;
+  text-align: center;
+  position: relative;
   box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
 }
 
 .stat-mod-circle {
-  width: 44px; height: 28px; border: 2px solid var(--border-color);
+  width: 44px; height: 28px;
+  border: 2px solid var(--border-color);
   border-radius: 14px; margin: 0 auto; background: #fff;
   font-weight: 800; font-size: 1.1rem; display: flex;
   align-items: center; justify-content: center; position: absolute;
@@ -49,15 +69,89 @@ input:focus { outline: none; border-bottom: 2px solid var(--dnd-red); }
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.skill-dot { width: 12px; height: 12px; border: 2px solid var(--border-color); border-radius: 50%; cursor: pointer; }
-.skill-dot.active { background-color: var(--border-color); }
+.stat-mod-circle.positive { background-color: #fef9c3; color: #78350f; }
+.stat-mod-circle.negative { background-color: #fee2e2; color: #991b1b; }
 
-.tab-btn { padding: 12px 24px; font-weight: bold; border-radius: 10px 10px 0 0; border: 2px solid #000; border-bottom: none; cursor: pointer; transition: 0.3s; }
+.skill-dot {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.skill-dot.active { background-color: var(--dnd-red); border-color: var(--dnd-red); }
+
+.tab-btn {
+  padding: 12px 16px;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+  border: 2px solid #000;
+  border-bottom: none;
+  cursor: pointer;
+  transition: 0.3s;
+  flex: 1;
+  text-align: center;
+}
 .tab-btn.active { background: var(--parchment); color: #8b0000; border-top: 4px solid #8b0000; }
 .tab-btn.inactive { background: #222; color: #888; border-color: #444; }
 
 .coin-box { border: 1px solid #000; padding: 4px; border-radius: 4px; text-align: center; background: white; }
 .epic-border { border: 2px solid var(--dnd-red); padding: 10px; border-radius: 8px; background: rgba(139, 0, 0, 0.05); }
+
+/* Escudo CA — sin clip-path, compatible con print */
+.ca-shield {
+  border: 3px solid var(--dnd-gold);
+  border-radius: 8px;
+  background: white;
+  text-align: center;
+  padding: 6px 4px;
+  position: relative;
+  box-shadow: 0 0 0 1px var(--dnd-dark);
+}
+
+/* Transición de tabs */
+.tab-enter-active, .tab-leave-active { transition: opacity 0.3s, transform 0.3s; }
+.tab-enter-from { opacity: 0; transform: translateX(-20px); }
+.tab-leave-to { opacity: 0; transform: translateX(20px); }
+
+/* Spinner para dados */
+@keyframes spin-fast { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.dice-rolling { animation: spin-fast 0.5s linear infinite; }
+
+/* Resultado dado */
+.dice-result-enter-active { transition: opacity 0.3s, transform 0.3s; }
+.dice-result-enter-from { opacity: 0; transform: scale(0.5); }
+
+/* Slide-up para el tray del dado */
+.slide-up-enter-active, .slide-up-leave-active { transition: opacity 0.25s, transform 0.25s; }
+.slide-up-enter-from { opacity: 0; transform: translateY(16px); }
+.slide-up-leave-to { opacity: 0; transform: translateY(16px); }
+
+/* FAB del dado */
+.dice-fab {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background-color: var(--dnd-dark);
+  border: 2px solid var(--dnd-gold);
+  color: var(--dnd-gold);
+  font-size: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dice-fab:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+
+/* Mobile UX */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  .stat-container { padding-bottom: 22px; }
+}
 
 @media print {
   .no-print { display: none; }
