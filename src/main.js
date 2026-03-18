@@ -23,6 +23,10 @@ window.onerror = (msg, url, lineNo, columnNo, error) => {
 }
 
 const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+console.log('App initialization. Clerk Key present:', !!clerkKey)
+if (clerkKey) {
+  console.log('Clerk Key starts with:', clerkKey.substring(0, 8))
+}
 
 const app = createApp(App)
 app.use(createPinia())
