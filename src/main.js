@@ -5,21 +5,24 @@ import router from './router/index.js'
 import './index.css'
 import './styles/landing.css'
 
-const pinia = createPinia()
-const app = createApp(App)
-app.use(pinia)
-
-// Clerk es opcional — si no hay key configurada, la app funciona sin auth
-const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-if (clerkKey && clerkKey.startsWith('pk_')) {
-  import('@clerk/vue').then(({ clerkPlugin }) => {
-    app.use(clerkPlugin, { publishableKey: clerkKey })
-    app.use(router)
-    app.mount('#app')
-  })
-} else {
-  // Sin Clerk: arrancar igual (auth deshabilitado, modo demo)
-  console.warn('⚠️  VITE_CLERK_PUBLISHABLE_KEY no configurada — modo demo sin auth')
+async function bootstrap() {
+  const app = createApp(App)
+  app.use(createPinia())
   app.use(router)
+
+  const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+  if (clerkKey?.startsWith('pk_')) {
+    try {
+      const { clerkPlugin } = await import('@clerk/vue')
+      app.use(clerkPlugin, { publishableKey: clerkKey })
+    } catch (e) {
+      console.warn('Clerk init failed:', e.message)
+    }
+  } else {
+    console.warn('⚠️ No VITE_CLERK_PUBLISHABLE_KEY — modo demo')
+  }
+
   app.mount('#app')
 }
+
+bootstrap()

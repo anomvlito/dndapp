@@ -1,4 +1,8 @@
-<script setup>
+const props = defineProps({
+  characterId: { type: [String, Number], default: null },
+  initialData: { type: Object, default: null }
+})
+
 import { ref, computed, watch, onMounted } from 'vue'
 
 import DiceTray from './DiceTray.vue'
@@ -21,7 +25,7 @@ import { getMod } from '../utils/modifiers'
 import { exportToExcel } from '../utils/exportExcel'
 import { debounce } from 'lodash-es'
 
-const charId = ref(null)
+const charId = ref(props.characterId)
 const isSaving = ref(false)
 const lastSaved = ref(null)
 
@@ -124,44 +128,62 @@ watch(charInfo, (newVal) => {
 }, { deep: true })
 
 onMounted(async () => {
-  // Try to load first char or create one
+  // If we have initial data, use it
+  if (props.initialData) {
+    mapCharData(props.initialData)
+    return
+  }
+
+  // Try to load by ID if provided, or load first available
   try {
-    const res = await fetch('/api/characters')
+    const url = charId.value ? `/api/characters/${charId.value}` : '/api/characters'
+    const res = await fetch(url)
     const data = await res.json()
-    if (data && data.length > 0) {
-      const char = data[0]
-      charId.value = char.id
-      charInfo.value = {
-        name: char.name,
-        classLevel: char.class_level,
-        background: char.background,
-        race: char.race,
-        alignment: char.alignment,
-        currentHp: char.current_hp,
-        maxHp: char.max_hp
-      }
-      stats.value = {
-        fuerza: char.fuerza,
-        destreza: char.destreza,
-        constitucion: char.constitucion,
-        inteligencia: char.inteligencia,
-        sabiduria: char.sabiduria,
-        carisma: char.carisma
-      }
-    } else {
-      // Create new
+
+    if (Array.isArray(data) && data.length > 0) {
+      mapCharData(data[0])
+    } else if (data && !Array.isArray(data)) {
+      mapCharData(data)
+    } else if (!charId.value) {
+      // Create new character if none found and no specific ID was requested
       const createRes = await fetch('/api/characters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: 'El Olvidado', stats: INITIAL_STATS })
       })
-      const createData = await createRes.json()
-      charId.value = createData.id
+      if (createRes.ok) {
+        const createData = await createRes.json()
+        mapCharData(createData)
+      }
     }
   } catch (e) {
     console.error('Failed to init char:', e)
   }
 })
+
+function mapCharData(char) {
+  if (!char) return
+  charId.value = char.id
+  charInfo.value = {
+    name: char.name || 'El Olvidado',
+    classLevel: char.class_level || '',
+    background: char.background || '',
+    race: char.race || '',
+    alignment: char.alignment || '',
+    currentHp: char.current_hp ?? 10,
+    maxHp: char.max_hp ?? 10,
+    tempHp: char.temp_hp || 0,
+    inspiration: char.inspiration || false
+  }
+  stats.value = {
+    fuerza: char.fuerza ?? 10,
+    destreza: char.destreza ?? 10,
+    constitucion: char.constitucion ?? 10,
+    inteligencia: char.inteligencia ?? 10,
+    sabiduria: char.sabiduria ?? 10,
+    carisma: char.carisma ?? 10
+  }
+}
 </script>
 
 <template>
