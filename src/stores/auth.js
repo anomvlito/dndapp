@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
@@ -10,8 +10,9 @@ export const useAuthStore = defineStore('auth', () => {
   const isDM = computed(() => user.value?.role === 'dm')
   const isPlayer = computed(() => user.value?.role === 'player')
 
-  async function initFromClerk(clerkUser) {
-    if (!clerkUser) {
+  // Helper to handle Clerk synchronization
+  async function syncFromClerk(clerkUser, signedIn) {
+    if (!signedIn || !clerkUser) {
       user.value = null
       token.value = null
       loading.value = false
@@ -19,7 +20,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     try {
-      // Sync user to our DB and get role
       const res = await fetch('/api/users/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,5 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
   }
 
-  return { user, token, loading, isSignedIn, isDM, isPlayer, initFromClerk, signOut }
+  return { 
+    user, token, loading, 
+    isSignedIn, isDM, isPlayer, 
+    syncFromClerk, signOut 
+  }
 })

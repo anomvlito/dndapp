@@ -1,19 +1,31 @@
 <script setup>
-import { useClerk, useUser, SignIn } from '@clerk/vue'
+import { useUser, SignIn } from '@clerk/vue'
 import { useRouter } from 'vue-router'
-import { watch } from 'vue'
+import { watch, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 
-const { isSignedIn, user } = useUser()
+const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const hasClerk = clerkKey && clerkKey.startsWith('pk_')
+
 const auth = useAuthStore()
 const router = useRouter()
 
-watch([isSignedIn, user], async ([signedIn, clerkUser]) => {
-  if (signedIn && clerkUser) {
-    await auth.initFromClerk(clerkUser)
-    router.push('/dashboard')
+// Requerimos que Clerk esté presente para usar el hook
+let hook = null
+if (hasClerk) {
+  try {
+    hook = useUser()
+    const { isSignedIn, user } = hook
+    watch([isSignedIn, user], async ([signedIn, clerkUser]) => {
+      if (signedIn && clerkUser) {
+        await auth.syncFromClerk(clerkUser, true)
+        router.push('/dashboard')
+      }
+    }, { immediate: true })
+  } catch (error) {
+    console.warn('Sign In View: Clerk hook failed', error)
   }
-}, { immediate: true })
+}
 </script>
 
 <template>
@@ -30,16 +42,22 @@ watch([isSignedIn, user], async ([signedIn, clerkUser]) => {
         </p>
       </div>
 
+      <div v-if="!hasClerk" class="text-center p-6 bg-red-950/20 border border-red-900 rounded-xl">
+        <p class="text-xs text-red-400 font-bold mb-4">⚠️ MODO DEMO - CLERK NO CONFIGURADO</p>
+        <button @click="router.push('/dashboard')" class="btn-dnd-primary text-xs w-full py-3">
+          Ver Dashboard (Simulado)
+        </button>
+      </div>
+
       <SignIn
+        v-else
         :appearance="{
           elements: {
             card: 'bg-transparent shadow-none',
-            headerTitle: 'text-yellow-400 font-bold',
+            headerTitle: 'hidden',
             socialButtonsBlockButton: 'border border-yellow-800 bg-red-950/30 text-yellow-200 hover:bg-red-900/40',
             formButtonPrimary: 'bg-red-800 hover:bg-red-700 border border-yellow-700',
             footerActionLink: 'text-yellow-400 hover:text-yellow-300',
-            formFieldInput: 'bg-black/30 border-yellow-900/50 text-white',
-            formFieldLabel: 'text-yellow-200/60',
           }
         }"
         redirect-url="/dashboard"
