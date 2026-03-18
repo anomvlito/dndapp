@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/liquid-glass.css';
+
 :root {
   --dnd-red: #8B1A1A;
   --dnd-gold: #C9A84C;
@@ -26,7 +28,7 @@ body {
   border: 3px solid #4a3728;
 }
 
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
 input[type="text"], input[type="number"], textarea {

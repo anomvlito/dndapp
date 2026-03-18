@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 import DiceTray from './components/DiceTray.vue'
 import CharacterStats from './components/CharacterStats.vue'
@@ -19,6 +19,11 @@ import {
 } from './constants/dndData'
 import { getMod } from './utils/modifiers'
 import { exportToExcel } from './utils/exportExcel'
+import { debounce } from 'lodash-es'
+
+const charId = ref(null)
+const isSaving = ref(false)
+const lastSaved = ref(null)
 
 const activeTab = ref('main')
 
@@ -87,6 +92,76 @@ function handleExport() {
 function handleReset() {
   if (confirm('¿Reiniciar memoria?')) window.location.reload()
 }
+
+// REAL-TIME SAVE LOGIC
+const saveToDb = async (type, data) => {
+  if (!charId.value) return
+  isSaving.value = true
+  try {
+    const res = await fetch(`/api/characters?id=${charId.value}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, data })
+    })
+    if (res.ok) {
+      lastSaved.value = new Date().toLocaleTimeString()
+    }
+  } catch (e) {
+    console.error('Error saving:', e)
+  } finally {
+    isSaving.value = false
+  }
+}
+
+const debouncedSaveStats = debounce((val) => saveToDb('stats', val), 1000)
+const debouncedSaveBasics = debounce((val) => saveToDb('basics', val), 1000)
+const debouncedSaveHp = debounce((val) => saveToDb('hp', val), 1000)
+
+watch(stats, (newVal) => debouncedSaveStats(newVal), { deep: true })
+watch(charInfo, (newVal) => {
+  debouncedSaveBasics(newVal)
+  debouncedSaveHp({ current: newVal.currentHp, temp: newVal.tempHp })
+}, { deep: true })
+
+onMounted(async () => {
+  // Try to load first char or create one
+  try {
+    const res = await fetch('/api/characters')
+    const data = await res.json()
+    if (data && data.length > 0) {
+      const char = data[0]
+      charId.value = char.id
+      charInfo.value = {
+        name: char.name,
+        classLevel: char.class_level,
+        background: char.background,
+        race: char.race,
+        alignment: char.alignment,
+        currentHp: char.current_hp,
+        maxHp: char.max_hp
+      }
+      stats.value = {
+        fuerza: char.fuerza,
+        destreza: char.destreza,
+        constitucion: char.constitucion,
+        inteligencia: char.inteligencia,
+        sabiduria: char.sabiduria,
+        carisma: char.carisma
+      }
+    } else {
+      // Create new
+      const createRes = await fetch('/api/characters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'El Olvidado', stats: INITIAL_STATS })
+      })
+      const createData = await createRes.json()
+      charId.value = createData.id
+    }
+  } catch (e) {
+    console.error('Failed to init char:', e)
+  }
+})
 </script>
 
 <template>
@@ -111,14 +186,19 @@ function handleReset() {
       <div class="parchment-bg rounded-b-xl p-3 sm:p-5 md:p-8 shadow-2xl border-x-2 border-b-2 border-black/5">
         <!-- HEADER -->
         <header class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8 items-end border-b-4 border-dnd-red/20 pb-6">
-          <div class="md:col-span-5">
+          <div class="md:col-span-5 relative">
             <label class="text-[0.6rem] font-black uppercase text-dnd-red tracking-widest block mb-1">Nombre del Personaje</label>
             <input
               type="text"
               class="text-3xl font-bold header-font w-full bg-transparent outline-none focus:border-b-2 border-dnd-gold"
-              :value="charInfo.name"
-              @input="handleCharInfoChange({ name: $event.target.value })"
+              v-model="charInfo.name"
             />
+            <div v-if="isSaving" class="absolute -top-6 right-0 text-[0.5rem] font-bold text-dnd-gold animate-pulse uppercase tracking-tighter">
+              Guardando esencia...
+            </div>
+            <div v-else-if="lastSaved" class="absolute -top-6 right-0 text-[0.5rem] font-bold text-gray-400 uppercase tracking-tighter">
+              Sincronizado: {{ lastSaved }}
+            </div>
           </div>
           <div class="md:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-3">
             <div v-for="field in [
@@ -129,8 +209,7 @@ function handleReset() {
               <label class="text-[0.55rem] font-bold uppercase text-gray-400 block">{{ field.label }}</label>
               <input
                 type="text"
-                :value="charInfo[field.key]"
-                @input="handleCharInfoChange({ [field.key]: $event.target.value })"
+                v-model="charInfo[field.key]"
                 class="font-black text-sm w-full bg-transparent border-b border-gray-100 py-1 outline-none focus:border-dnd-red"
               />
             </div>

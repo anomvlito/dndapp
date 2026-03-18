@@ -1,0 +1,43 @@
+/* 📱 Liquid Glass UI Design System (Web Port) */
+
+.glass-panel {
+  @apply backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+  @apply bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  @apply bg-slate-900/60 border-white/30 transform scale-[1.02];
+}
+
+.glass-button {
+  @apply relative overflow-hidden backdrop-blur-sm bg-white/5 border border-white/10 px-4 py-2 rounded-xl transition-all;
+}
+
+.glass-button:hover {
+  @apply bg-white/15 border-white/30 scale-105;
+}
+
+.glass-button:active {
+  @apply scale-95 opacity-80;
+}
+
+/* D&D specific variant */
+.dnd-glass-red {
+  @apply bg-red-900/20 backdrop-blur-lg border border-red-500/30;
+  box-shadow: inset 0 0 20px rgba(139, 26, 26, 0.2);
+}
+
+.dnd-glass-gold {
+  @apply bg-orange-950/30 backdrop-blur-lg border border-yellow-600/30;
+}
+
+/* Scrollable area under sidebar/modal */
+.scroll-under {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 168, 76, 0.3) transparent;
+}

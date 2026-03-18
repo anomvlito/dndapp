@@ -37,6 +37,7 @@ export const INITIAL_CHAR_INFO = {
   race: 'Humano (Variante)',
   currentHp: 7,
   maxHp: 13,
+  tempHp: 0,
   xp: 0,
   alignment: 'Neutral',
   playerName: '',

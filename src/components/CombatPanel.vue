@@ -91,6 +91,8 @@ const hpColorClass = computed(() => {
             type="number"
             class="text-3xl font-black text-center w-full text-gray-200 focus:text-black bg-transparent outline-none"
             placeholder="0"
+            :value="charInfo.tempHp"
+            @change="emit('charInfoChange', { tempHp: parseInt($event.target.value) })"
           />
           <span class="text-[0.5rem] font-bold uppercase text-gray-400 block border-t mt-1 pt-1">PTOS Temporales</span>
         </div>
