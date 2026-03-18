@@ -58,6 +58,10 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  // Sin Clerk configurado, permitir todo (modo demo)
+  const clerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+  if (!clerkKey || !clerkKey.startsWith('pk_')) return
+
   const auth = useAuthStore()
 
   if (to.meta.requiresAuth && !auth.isSignedIn) {
