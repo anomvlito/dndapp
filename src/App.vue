@@ -1,27 +1,12 @@
 <script setup>
-import { watch } from 'vue'
-import { useAuthStore } from './stores/auth'
+import { defineAsyncComponent, shallowRef } from 'vue'
 
-const auth = useAuthStore()
-
-// Intentar conectar con Clerk si está disponible
-try {
-  const { useUser } = await import('@clerk/vue')
-  const { isSignedIn, user, isLoaded } = useUser()
-
-  watch([isLoaded, isSignedIn, user], async ([loaded, signedIn, clerkUser]) => {
-    if (!loaded) return
-    if (signedIn && clerkUser && !auth.isSignedIn) {
-      await auth.initFromClerk(clerkUser)
-    } else if (!signedIn && auth.isSignedIn) {
-      auth.signOut()
-    }
-  }, { immediate: true })
-} catch {
-  // Clerk no disponible — modo demo, sin auth
-}
+// ClerkSync se monta sólo si hay key — componente raíz NUNCA es async
+const hasClerk = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.startsWith('pk_')
+const ClerkSync = hasClerk ? defineAsyncComponent(() => import('./components/ClerkSync.vue')) : null
 </script>
 
 <template>
+  <component :is="ClerkSync" v-if="ClerkSync" />
   <router-view />
 </template>
